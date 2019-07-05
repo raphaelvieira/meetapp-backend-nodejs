@@ -1,6 +1,12 @@
 import * as Yup from 'yup';
-import { startOfHour, isBefore, parseISO, format, subHours } from 'date-fns';
-import pt from 'date-fns/locale/pt';
+import {
+  startOfHour,
+  isBefore,
+  parseISO,
+  startOfDay,
+  endOfDay,
+} from 'date-fns';
+import { Op } from 'sequelize';
 import Meetup from '../models/Meetup';
 import User from '../models/User';
 import File from '../models/File';
@@ -32,7 +38,7 @@ class MeetupController {
           include: [
             {
               model: File,
-              as: 'banner',
+              as: 'file',
               attributes: ['id', 'path', 'url'],
             },
           ],
@@ -82,7 +88,7 @@ class MeetupController {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
-    const hourStart = startOfHour(parseISO(date));
+    const hourStart = startOfHour(parseISO(req.query.date));
 
     if (isBefore(hourStart, new Date())) {
       return res.status(400).json({ error: 'Meetup date invalid' });

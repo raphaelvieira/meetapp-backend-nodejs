@@ -1,5 +1,4 @@
-import Sequelize, { Model } from 'sequelize';
-import { isBefore, subHours } from 'date-fns';
+import { Model } from 'sequelize';
 
 class Subscription extends Model {
   static init(sequelize) {
@@ -20,4 +19,4 @@ class Subscription extends Model {
   }
 }
 
-export default Meetup;
+export default Subscription;
