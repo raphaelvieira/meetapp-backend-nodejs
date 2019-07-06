@@ -1,13 +1,14 @@
 import * as Yup from 'yup';
-import { startOfHour, isBefore, parseISO, format, subHours } from 'date-fns';
 import { Op } from 'sequelize';
-import pt from 'date-fns/locale/pt';
 import Subscription from '../models/Subscription';
 import Meetup from '../models/Meetup';
+import User from '../models/User';
+import Queue from '../../lib/Queue';
+import SubscriptionMail from '../jobs/SubscriptionMail';
 
 class SubscriptionController {
   async index(req, res) {
-    //study
+    // study
     const subscriptions = await Subscription.findAll({
       where: {
         user_id: req.userId,
@@ -33,12 +34,12 @@ class SubscriptionController {
       meetup_id: Yup.number().required(),
     });
 
-    if (!(await schema.isValid(req.body))) {
+    if (!(await schema.isValid(req.params))) {
       return res.status(400).json({ error: 'Validation fails' });
     }
 
     const user = await User.findByPk(req.userId);
-    const meetup = await Meetup.findByPk(req.params.meetupId, {
+    const meetup = await Meetup.findByPk(req.params.meetup_id, {
       include: [User],
     });
 
@@ -67,11 +68,11 @@ class SubscriptionController {
       ],
     });
 
-    if (checkDate) {
+    /* if (checkDate) {
       return res
         .status(400)
         .json({ error: "Can't subscribe to two meetups at the same time" });
-    }
+    } */
 
     const subscription = await Subscription.create({
       user_id: user.id,

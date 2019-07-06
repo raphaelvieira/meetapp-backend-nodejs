@@ -1,5 +1,4 @@
 import Sequelize from 'sequelize';
-import mongoose from 'mongoose';
 import User from '../app/models/User';
 import File from '../app/models/File';
 import Meetup from '../app/models/Meetup';

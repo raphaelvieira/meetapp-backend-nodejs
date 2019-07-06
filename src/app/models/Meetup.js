@@ -1,5 +1,5 @@
 import Sequelize, { Model } from 'sequelize';
-import { isBefore, subHours } from 'date-fns';
+import { isBefore } from 'date-fns';
 
 class Meetup extends Model {
   static init(sequelize) {
@@ -20,7 +20,7 @@ class Meetup extends Model {
         cancelable: {
           type: Sequelize.VIRTUAL,
           get() {
-            return isBefore(new Date(), subHours(this.date));
+            return isBefore(this.date, new Date());
           },
         },
       },
@@ -35,7 +35,7 @@ class Meetup extends Model {
   // add relationships
   static associate(models) {
     this.hasMany(models.Subscription, { foreignKey: 'meetup_id' });
-    this.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
+    this.belongsTo(models.User, { foreignKey: 'user_id' });
     this.belongsTo(models.File, { foreignKey: 'file_id', as: 'file' });
   }
 }

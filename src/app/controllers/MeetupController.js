@@ -126,7 +126,6 @@ class MeetupController {
         error: "Can't delete past meetups",
       });
     }
-    await meetup.delete();
     await meetup.destroy();
     return res.send();
   }
