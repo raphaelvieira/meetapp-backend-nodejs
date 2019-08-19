@@ -43,13 +43,11 @@ class MeetupController {
           model: User,
           as: 'user',
           attributes: ['id', 'name'],
-          include: [
-            {
-              model: File,
-              as: 'file',
-              attributes: ['id', 'path', 'url'],
-            },
-          ],
+        },
+        {
+          model: File,
+          as: 'file',
+          attributes: ['id', 'path', 'url'],
         },
       ],
     });
@@ -91,12 +89,12 @@ class MeetupController {
     const meetup = await Meetup.findByPk(req.params.id);
 
     if (meetup.user_id !== req.userId) {
-      res.status(401).json({
+      return res.status(401).json({
         error: "You don't have permission to cancel this Meetup",
       });
     }
     if (meetup.past) {
-      res.status(400).json({
+      return res.status(400).json({
         error: "Can't delete past meetups",
       });
     }

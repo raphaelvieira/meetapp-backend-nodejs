@@ -35,7 +35,7 @@ class Meetup extends Model {
   // add relationships
   static associate(models) {
     this.hasMany(models.Subscription, { foreignKey: 'meetup_id' });
-    this.belongsTo(models.User, { foreignKey: 'user_id' });
+    this.belongsTo(models.User, { foreignKey: 'user_id', as: 'user' });
     this.belongsTo(models.File, { foreignKey: 'file_id', as: 'file' });
   }
 }

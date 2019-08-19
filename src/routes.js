@@ -8,6 +8,7 @@ import UserController from './app/controllers/UserController';
 import SessionController from './app/controllers/SessionController';
 import FileController from './app/controllers/FileController';
 import MeetupController from './app/controllers/MeetupController';
+import DetailsMeetupController from './app/controllers/DetailsMeetupController';
 import SubscriptionController from './app/controllers/SubscriptionController';
 import OrganizingController from './app/controllers/OrganizingController';
 import authMiddleware from './app/middlewares/auth';
@@ -35,18 +36,20 @@ routes.post(
   bruteForce.prevent,
   SessionController.store
 );
+routes.post('/users', validateUserStore, UserController.store);
 // global middleware
 routes.use(authMiddleware);
 routes.post('/files', upload.single('file'), FileController.store);
-routes.post('/users', validateUserStore, UserController.store);
+
 routes.put('/users', validateUserUpdate, UserController.update);
 routes.get('/meetups', MeetupController.index);
+routes.get('/details-meetup/:id', DetailsMeetupController.index);
 routes.post('/meetups/', validateMeetupStore, MeetupController.store);
 routes.put('/meetups/:id', validateMeetupUpdate, MeetupController.update);
 routes.delete('/meetups/:id', MeetupController.delete);
 routes.get('/subscriptions', SubscriptionController.index);
 routes.post(
-  '/subscriptions/:meetup_id',
+  '/subscriptions/:id',
   validateSubscriptionStore,
   SubscriptionController.store
 );
