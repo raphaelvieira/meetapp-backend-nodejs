@@ -2,16 +2,8 @@ import Meetup from '../models/Meetup';
 import User from '../models/User';
 import File from '../models/File';
 
-// import Cache from '../../lib/Cache';
-
 class DetailsMeetupController {
   async index(req, res) {
-    // const cached = await Cache.get('meetups');
-
-    // if (cached) {
-    //   return res.json(cached);
-    // }
-
     if (!req.params.id) {
       return res.status(400).json({ error: 'Meetup id invalid' });
     }
@@ -41,7 +33,6 @@ class DetailsMeetupController {
         },
       ],
     });
-    // await Cache.set('meetups', meetups);
     return res.json(meetup);
   }
 }
