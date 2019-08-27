@@ -9,8 +9,19 @@ class CreateSubscriptionService {
   async run({ meetup_id, user_id }) {
     const user = await User.findByPk(user_id);
     const meetup = await Meetup.findByPk(meetup_id, {
-      include: [User],
+      include: 'user',
     });
+
+    const checkSubscription = await Subscription.findOne({
+      where: {
+        user_id,
+        meetup_id,
+      },
+    });
+    if (checkSubscription) {
+      throw new Error(`You already subscribed to this Meetup.`);
+    }
+
     if (!meetup) {
       throw new Error(`Meetup does not exists.`);
     } else {

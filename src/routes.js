@@ -49,9 +49,10 @@ routes.put('/meetups/:id', validateMeetupUpdate, MeetupController.update);
 routes.delete('/meetups/:id', MeetupController.delete);
 routes.get('/subscriptions', SubscriptionController.index);
 routes.post(
-  '/subscriptions/:id',
+  '/subscriptions',
   validateSubscriptionStore,
   SubscriptionController.store
 );
+routes.delete('/subscriptions/:id', SubscriptionController.delete);
 routes.get('/organizing', OrganizingController.index);
 export default routes;

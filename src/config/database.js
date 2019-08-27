@@ -6,6 +6,7 @@ module.exports = {
   username: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_NAME,
+  logging: false,
   define: {
     timestamps: true, // createdAt and updatedAt columns in every Table
     underscored: true, // default with underscore for tables
