@@ -15,21 +15,29 @@ import Cache from '../../lib/Cache';
 
 class MeetupController {
   async index(req, res) {
-    const cached = await Cache.get('meetups');
-
-    if (cached) {
-      return res.json(cached);
-    }
-
     const where = {};
     const page = req.query.page || 1;
 
+    let cachekey;
     if (req.query.date) {
+      cachekey = `meetups:date:${req.query.date}:page:${page}`;
+      const cached = await Cache.get(cachekey);
+      if (cached) {
+        return res.json(cached);
+      }
+
       const searchDate = parseISO(req.query.date);
 
       where.date = {
         [Op.between]: [startOfDay(searchDate), endOfDay(searchDate)],
       };
+    } else {
+      cachekey = `meetups:date:all:page:${page}`;
+      const cached = await Cache.get(cachekey);
+
+      if (cached) {
+        return res.json(cached);
+      }
     }
 
     const meetups = await Meetup.findAll({
@@ -59,7 +67,7 @@ class MeetupController {
         },
       ],
     });
-    await Cache.set('meetups', meetups);
+    await Cache.set(cachekey, meetups);
     return res.json(meetups);
   }
 
@@ -75,7 +83,10 @@ class MeetupController {
       ...req.body,
     });
 
-    await Cache.invalidade('meetups');
+    const cachekeyAll = `meetups:date:all`;
+    await Cache.invalidade(cachekeyAll);
+    const cachekey = `meetups:date:${req.body.date}`;
+    await Cache.invalidade(cachekey);
 
     return res.json(meetup);
   }
@@ -88,7 +99,10 @@ class MeetupController {
       meetup_data: req.body,
     });
 
-    await Cache.invalidade('meetups');
+    const cachekeyAll = `meetups:date:all`;
+    await Cache.invalidade(cachekeyAll);
+    const cachekey = `meetups:date:${req.body.date}`;
+    await Cache.invalidade(cachekey);
 
     return res.json(meetup);
   }
@@ -106,9 +120,12 @@ class MeetupController {
         error: "Can't delete past meetups",
       });
     }
+    const cachekey = `meetups:date:${meetup.date}`;
     await meetup.destroy();
 
-    await Cache.invalidade('meetups');
+    const cachekeyAll = `meetups:date:all`;
+    await Cache.invalidade(cachekeyAll);
+    await Cache.invalidade(cachekey);
 
     return res.send();
   }
